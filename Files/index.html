@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="css/style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <script>
+      const settings = {
+        videoId: '6309715331112',
+        accountId: '6286608030001',
+        playerId: 'default',
+        deliveryId: 'default',
+      };
+
+      function setIframeContents(frameElement) {
+        const container = document.createElement('div');
+
+        container.setAttribute('id', 'player-container');
+        container.setAttribute('class', 'footballco-inner-container');
+
+        const iframeDocument =
+          frameElement.contentWindow.document || frameElement.contentDocument;
+        iframeDocument.body.appendChild(container);
+
+        const video = document.createElement('video-js');
+
+        video.setAttribute('data-video-id', settings.videoId);
+        video.setAttribute('data-account', settings.accountId);
+        video.setAttribute('data-player', settings.playerId);
+        video.setAttribute('data-embed', 'default');
+        video.setAttribute('data-application-id', '');
+        video.setAttribute('class', 'video-js vjs-fluid vjs-16-9');
+        video.setAttribute('id', 'video-container');
+        video.setAttribute('controls', '');
+
+        container.appendChild(video);
+
+        const brightcovePlayerPath =
+          '//players.brightcove.net/' +
+          settings.accountId +
+          '/' +
+          settings.playerId +
+          '_' +
+          settings.deliveryId +
+          '/index.min.js';
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = brightcovePlayerPath;
+        container.appendChild(script);
+      }
+
+      const iframe = document.createElement('iframe');
+
+      iframe.setAttribute(
+        'style',
+        `position:relative;width:100%;height:600px;`,
+      );
+      iframe.setAttribute('id', 'iframe-player');
+      iframe.setAttribute('frameBorder', 0);
+      iframe.setAttribute('scrolling', 'no');
+      iframe.setAttribute('class', 'footballco-main-iframe');
+
+      document.body.appendChild(iframe);
+
+      setTimeout(() => setIframeContents(iframe), 0);
+    </script>
+  </body>
+</html>

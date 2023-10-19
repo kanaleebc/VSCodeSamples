@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Control Test</title>
+  
+  <style>
+    .video-js.vjs-fullscreen .vjs-control-bar {
+      display: none !important;
+    }
+  </style>
+
+  <script>
+    videojs.getPlayer("myPlayerID").ready(function () {
+      var myPlayer = this;
+      // Play the video in the player
+      myPlayer.on("loadedmetadata", function () {
+        myPlayer.play();
+        myPlayer.muted(true);
+      });
+
+      // Event listener for full-screen change
+      myPlayer.on("fullscreenchange", function () {
+        if (myPlayer.isFullscreen()) {
+          // Hide controls when in full-screen mode
+          myPlayer.controlBar.hide();
+        } else {
+          // Show controls when not in full-screen mode
+          myPlayer.controlBar.show();
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-primary navbar-dark">
+    <div class="container-lg">
+      <h4>Stand Alone Test</h4>
+    </div>
+  </nav>
+
+  <main class="container-lg pt-4">
+    <div style="max-width: 960px">
+      <style>
+        video-js.video-js.vjs-fluid:not(.vjs-audio-only-mode) {
+          padding-top: 56.25%;
+        }
+      </style>
+      <video-js
+        id="myPlayerID"
+        class="video-js vjs-fluid"
+        data-account="6415663006001"
+        data-player="default"
+        data-embed="default"
+        controls
+        data-video-id="6325073558112"
+        data-playlist-id=""
+        data-application-id=""
+      ></video-js>
+    </div>
+    <script src="https://players.brightcove.net/6415663006001/default_default/index.min.js"></script>
+  </main>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+    crossorigin="anonymous"
+  ></script>
+</body>
+</html>

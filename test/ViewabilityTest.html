@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>ViewabilityTest</title>
+    <link href="scroll-into-view.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <style>
+      .video-js {
+        width: 480px;
+        height: 270px;
+      }
+    </style>
+    <video-js
+      id="myPlayerID"
+      data-account="6415663006001"
+      data-player="default"
+      data-embed="default"
+      controls=""
+      data-video-id="6334119588112"
+      data-playlist-id=""
+      data-application-id=""
+      class="vjs-fluid"
+    ></video-js>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://players.brightcove.net/6415663006001/default_default/index.min.js"></script>
+    <script src="scroll-into-view.js"></script>
+
+    <script type="text/javascript">
+      videojs.getPlayer("myPlayerID").ready(function () {
+        var myPlayer = this;
+        myPlayer.scrollIntoView();
+      });
+    </script>
+    <script>
+      videojs.registerPlugin("scrollIntoView", function () {
+        var myPlayer = this;
+
+        // +++ Execute every time page is scrolled +++
+        window.onscroll = checkIfVideoInView;
+
+        // +++ Called on scroll, check if in view and play/pause +++
+        function checkIfVideoInView() {
+          if (isScrolledIntoView(myPlayerID)) {
+            // The player is fully in the viewport
+            myPlayer.play();
+          } else {
+            // The player is not in the viewport
+            myPlayer.pause();
+          }
+        }
+
+        // +++ Checks if player is in view +++
+        function isScrolledIntoView(elem) {
+          // Get the position of the viewport
+          var docViewTop = $(window).scrollTop();
+          var docViewBottom = docViewTop + $(window).height();
+
+          // Get the position of the player element
+          var elemTop = $(elem).offset().top;
+          var elemBottom = elemTop + $(elem).height();
+
+          // Determine if the player element is fully in the viewport
+          return (
+            elemBottom >= docViewTop &&
+            elemTop <= docViewBottom &&
+            elemBottom <= docViewBottom &&
+            elemTop >= docViewTop
+          );
+        }
+      });
+
+      // Initialize Brightcove IMA3 plugin
+      bc('myPlayerID').ima3({
+        adTechOrder: ['html5', 'flash'],
+        timeout: 6000,
+        debug: true,
+        hardTimeouts: false,
+        loadingSpinner: false,
+        vpaidMode: 'ENABLED',
+        ima3SdkSettings: {
+          disableCustomPlaybackForIOS10Plus: true,
+          autoPlayAdBreaks: false,
+          numRedirects: 10
+        }
+      });
+    </script>
+  </body>
+</html>

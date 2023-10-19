@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <style>
+        .video-js {
+            width: 640px;
+            height: 360px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <video-js
+          id="myPlayer"
+          data-account="6415663006001"
+          data-player="default"
+          data-embed="default"
+          controls=""
+          data-video-id="6334119588112"
+          data-playlist-id=""
+          data-application-id=""
+          class="vjs-fluid">
+    </video-js>
+    <script src="https://players.brightcove.net/6415663006001/default_default/index.min.js"></script>
+
+    <script type="text/javascript">
+
+        videojs("myPlayer").ready(function() {
+            var myPlayer = this;
+
+            myPlayer.on("loadeddata", function () { 
+                // Clear phantom texttracks.
+                myPlayer.controlBar.chaptersButton.items.forEach((item) => myPlayer.controlBar.chaptersButton.track_.removeEventListener('cuechange', videojs.bind(item, item.update)));
+                
+                // Update the chapters track
+                videojs.getComponent('TrackButton').prototype.update.call(myPlayer.controlBar.chaptersButton);
+            }); 
+        });
+    </script>
+</body>
+
+</html>

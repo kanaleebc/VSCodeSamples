@@ -1,0 +1,204 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>AdPlayer Test</title>
+    
+    <link href="//players.brightcove.net/videojs-ima3/3/videojs-ima3.css" rel="stylesheet">
+
+    <style>
+        .video-js {
+            width: 640px;
+            height: 360px;
+        }
+        .vjs-ad-playing.vjs-ad-playing .vjs-progress-control .vjs-progress-control {
+            height: 0.1em;
+            top: 0.1em;
+        }
+    </style>
+</head>
+
+<body>
+
+<!--
+    Normal: 5594117657001
+    AdCues: 6099083102001 (5,10sec)
+-->
+<video-js
+id="adsPlayer"
+data-video-id="6099083102001"
+data-account="3981276734001"
+data-player="WUR634eXa"
+data-embed="default"
+class="video-js"
+playsinline
+controls></video-js>
+<button id="ondemand" onclick="myPlayer.ima3.adrequest();">Ad Request</button>
+<br>
+
+<p style="text-align: left; font-family: monospace"><b><u>MESSAGE LOG:</u></b></p>
+<p id="message"></p>
+
+<script src="//players.brightcove.net/3981276734001/WUR634eXa_default/index.js"></script>
+<script src="//players.brightcove.net/videojs-ima3/3/videojs-ima3.min.js"></script>
+
+<script type="text/javascript">
+    // https://player.support.brightcove.com/plugins/advertising-ima3-plugin.html
+    
+    var myPlayer;
+    const EVENTS = [
+    'loadstart',
+    /*          'progress', */
+    'suspend',
+    'abort',
+    'error',
+    'emptied',
+    'stalled',
+    'loadedmetadata',
+    'loadeddata',
+    'canplay',
+    'canplaythrough',
+    'playing',
+    'waiting',
+    'seeking',
+    'seeked',
+    'ended',
+    'durationchange',
+    /*          'timeupdate', */
+    'play',
+    'pause',
+    'ratechange',
+    'resize',
+    'volumechange',
+    ];
+    //////////////////////////////////////////////////////
+    // IMA Playground: https://codepen.io/victor-ramos/pen/BRVbeR?editors=1010
+    // IMA SDK Document: https://developers.google.com/interactive-media-ads/docs/sdks/html5
+    //////////////////////////////////////////////////////
+    
+
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsRenderingSettings#uiElements
+
+    bc('adsPlayer').ima3({
+        adTechOrder: ['html5', 'flash'],
+        
+        // VAST3 (Google standard one)
+        //serverUrl: 'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=',
+        serverUrl : 'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=%2F35012960%2F_mz_manzoni.it%2Fdemo%2Fx01&ciu_szs=300x250&gdfp_req=1&env=vp&output=xml_vast4&unviewed_position_start=1&url=https%3A%2F%2Fwww.lastampa.it%2Fpolitica%2F2023%2F08%2F03%2Fvideo%2Fantonella_zedda_fdi_al_vice_presidente_del_senato_centinaio_mi_chiami_senatore_non_senatrice_la_replica_chiamatevi_c-12980826%2F&description_url=https%3A%2F%2Fwww.lastampa.it%2Fpolitica%2F2023%2F08%2F03%2Fvideo%2Fantonella_zedda_fdi_al_vice_presidente_del_senato_centinaio_mi_chiami_senatore_non_senatrice_la_replica_chiamatevi_c-12980826%2F&correlator=2479932912434118&cust_params=mnzadv%3Ddemo-newskin%26rdzprll%3Dskpf%26kwmnzdelivery%3Dfalse%26abtest%3DA%26mapnode%3Dresponsive%26adxbs%3DS_6189%26refresh%3D0%26cnt%3D0%26mnzadv%3Ddemo-sdk&vpa=auto&vpmute=1&sdkv=h.3.593.1&osd=2&frm=0&vis=1&sdr=1&hl=ja&afvsz=200x200%2C250x250%2C300x250%2C336x280%2C450x50%2C468x60%2C480x70&is_amp=0&uach=WyJtYWNPUyIsIjEzLjUuMiIsImFybSIsIiIsIjExNy4wLjU5MzguNjIiLFtdLDAsbnVsbCwiNjQiLFtbIkdvb2dsZSBDaHJvbWUiLCIxMTcuMC41OTM4LjYyIl0sWyJOb3Q7QT1CcmFuZCIsIjguMC4wLjAiXSxbIkNocm9taXVtIiwiMTE3LjAuNTkzOC42MiJdXSwwXQ..&u_so=l&ctv=0&mpt=brightcove%2Fplayer-ht&mpv=5.2.2&gdpr=1&gdpr_consent=CPy3MMAPy3MMAB7EzBITDYCsAP_AAAAAAAAAJrNV_H__bX9r8X7_6ft0eY1f9_j77uQxBhfJk-4F3LvW_JwX32E7NF36tq4KmRoEu3ZBIUNlHJHUTVmwaogVrzHsak2cpTNKJ6BkkFMRc2dYCF5vm4tjeQKY5_p_d3f52T-9_dv839z33813v3d5f--1-PDdU5-9Dfn_fRfb-9IP9_78v8v8_t_rk2_eT13_tevr_D--f_-7_XX-8QUICIAOADPgI8ASqAmcBvgDtgHcgQUAkQBJQCUYEtAJjgTJAmkEFAAkJBgAAQAAuACgAKgAcgA8AEAAMAAZQA0ADUAHgARAAmABPACqAGYAN4AegA_ACEgEMARIAjgBLACaAFKAMAAYcAygDLAGyAOeAdwB3wD2APiAfYB-wD_AQMAikBFwEYAI0ASUAlMBPwFBgKeAq4BcwC9AGKANEAbQA3ABxAEOgI9gSIBIoCdgFDgKPAUiApsBbAC5AF3gLzAYMAw2BkYGSAMnAZcAzMBnIDPgGkQNXA1kBt4DdQHBQOTA5QBy4DxwHtAPpAgmBBgCEMELQQvAhyBD0CH4EcQI-gR_AkUBJCCTAJMgSwAlmBLcCXwEwIJlgmYBM4NAFAKeAh0BcgDPgHKCIAoBTwEOgLkAZ8A5QVAEAXIAz4BygELxkAQBcgDPgHKAQvHQegAFwAUABUADkAHwAgABdADAAMoAaABqADwAIgATAAngBVgC4ALoAYgAzABvAD0AH6AQwBEgCWAE0AJwAUYApQBgADDAGUANEAbIA54B3AHeAPaAfYB-gD_AIGARSAiwCMAEdAJKASmAn4CggFPgKiAq4BYgC5wF5AXoAxQBtADcAHEAOcAdQA-wCHQEXgI9ASIAlQBMgCdgFDwKPApCBTQFNgKsAWKAsoBbAC3QFwALkAXaAu8BeYC-gGDAMNAY9AyMDJAGTgMqAZYAy4BmYDOQGfANEAaQA00BqsDVwNYAbeA3UBxcDkwOUAcuA8cB5ID2gH0gPrAfcBAECDAELQIXwQ5BDoCHoEcQI7AR9Aj-BIoCSAEmQJUASwAlmBLoCXwEwAJmATOIQPQAFgAUABcADEAGoATAApgBVAC4AGIAN4AegBHAClAGAAMoAc8A7gDvAH-ARQAkoBKQCggFPgKiAq4BcwDFAG0AOcAdQBHoCVAFNAKsAWKAsoBaIC4AFyAMjAZOAzkBnwDRAGqgOAAcoA8cB9IEGAIUAQtAheBDoCHoEcQJFASQAkyBLoCZxKB6AAgABYAFAAOAAfgBgAGIAPAAiABMACqAFwAMUAhgCJAEcAKMAYAA2QB3gD8AKfAVEBVwC5gGKAOoAfYBDoCJgEXgI9ASIAo8BTQCxQFlALYAXnAyMDJAGTgM5AZ8A0gBrADbwHAAPaAfSBAECB4EGAIQgQvAh6BHECRQEkAJKgSZAl0BL6CZYJmATOKQXwAFwAUABUADkAHwAggBgAGUANAA1AB4AEQAJgATwApABVADEAGYAP0AhgCJAFGAKUAYAAygBogDZAHOAO-AfgB-gEWAIwAR0AkoBKQCgwFRAVcAuYBeQDFAG0ANwAdQA9oB9gEOgImAReAj0BIgCdgFDgKQgU0BTYCrAFigLYAXAAuQBdoC8wF9AMNgZGBkgDJwGWAMuAZyAz4BpEDWANZAbeA3UBwUDkwOUAcuA8UB44D2gH0gQYAhCBC0CF4EM4Icgh0BHECOwEfQI_gSKAkhBJgEmQJVASzAl0BL4CYAEzAJnAAA&addtl_consent=1~43.46.55.61.70.83.89.93.108.117.122.124.135.136.143.144.147.149.159.192.196.202.211.228.230.239.259.266.286.291.311.317.322.323.327.338.367.371.385.394.397.407.413.415.424.430.436.445.453.482.486.491.494.495.522.523.540.550.559.560.568.574.576.584.587.591.737.802.803.820.821.839.864.899.904.922.931.938.979.981.985.1003.1027.1031.1040.1046.1051.1053.1067.1085.1092.1095.1097.1099.1107.1135.1143.1149.1152.1162.1166.1186.1188.1201.1205.1215.1226.1227.1230.1252.1268.1270.1276.1284.1290.1301.1307.1312.1345.1356.1364.1365.1375.1403.1415.1416.1421.1440.1449.1455.1495.1512.1516.1525.1540.1548.1555.1558.1570.1577.1579.1583.1584.1591.1603.1616.1638.1651.1653.1667.1677.1678.1682.1697.1699.1703.1712.1716.1721.1725.1732.1745.1750.1765.1769.1782.1786.1800.1810.1825.1827.1832.1838.1840.1842.1843.1845.1859.1866.1870.1878.1880.1889.1899.1917.1929.1942.1944.1962.1963.1964.1967.1968.1969.1978.2003.2007.2008.2027.2035.2039.2047.2052.2056.2064.2068.2072.2074.2088.2090.2103.2107.2109.2115.2124.2130.2133.2135.2137.2140.2145.2147.2150.2156.2166.2177.2183.2186.2205.2216.2219.2220.2222.2225.2234.2253.2279.2282.2292.2299.2305.2309.2312.2316.2322.2325.2328.2331.2334.2335.2336.2337.2343.2354.2357.2358.2359.2370.2376.2377.2387.2392.2400.2403.2405.2407.2411.2414.2416.2418.2425.2440.2447.2461.2462.2465.2468.2472.2477.2481.2484.2486.2488.2493.2498.2499.2501.2510.2517.2526.2527.2532.2535.2542.2552.2563.2564.2567.2568.2569.2571.2572.2575.2577.2583.2584.2596.2604.2605.2608.2609.2610.2612.2614.2621.2628.2629.2633.2636.2642.2643.2645.2646.2650.2651.2652.2656.2657.2658.2660.2661.2669.2670.2677.2681.2684.2687.2690.2695.2698.2713.2714.2729.2739.2767.2768.2770.2772.2784.2787.2791.2792.2798.2801.2805.2812.2813.2816.2817.2821.2822.2827.2830.2831.2834.2838.2839.2844.2846.2849.2850.2852.2854.2860.2862.2863.2865.2867.2869.2873.2874.2875.2876.2878.2880.2881.2882.2883.2884.2886.2887.2888.2889.2891.2893.2894.2895.2897.2898.2900.2901.2908.2909.2913.2914.2916.2917.2918.2919.2920.2922.2923.2927.2929.2930.2931.2940.2941.2947.2949.2950.2956.2958.2961.2963.2964.2965.2966.2968.2973.2975.2979.2980.2981.2983.2985.2986.2987.2994.2995.2997.2999.3000.3002.3003.3005.3008.3009.3010.3012.3016.3017.3018.3019.3024.3025.3028.3034.3037.3038.3043.3048.3052.3053.3055.3058.3059.3063.3066.3068.3070.3073.3074.3075.3076.3077.3078.3089.3090.3093.3094.3095.3097.3099.3104.3106.3109.3112.3117.3119.3126.3127.3128.3130.3135.3136.3145.3150.3151.3154.3155.3163.3167.3172.3173.3182.3183.3184.3185.3187.3188.3189.3190.3194.3196.3209.3210.3211.3214.3215.3217.3219.3222.3223.3225.3226.3227.3228.3230.3231.3234.3235.3236.3237.3238.3240.3244.3245.3250.3251.3253.3257.3260.3268.3270.3272.3281.3288.3290.3292.3293.3295.3296.3299.3300.3306.3307.3314.3315.3316.3318.3324.3327.3328.3330.3331.3531.3731.3831.3931.4131.4531.4631.4731.4831.5031.5231.6931.7031.7235.7831.7931.8931.9731.10231.10631.11031.11531.12831.13632&sdki=445&ptt=20&adk=313088867&sdk_apis=2%2C7%2C8&omid_p=Google1%2Fh.3.593.1&media_url=blob%3Ahttps%253a%2F%2Fwww.lastampa.it%2F94c911fc-52b8-4c3b-a2a5-e054b5050905&sid=0A665F29-6086-46EA-B2D5-295717C36308&a3p=EhkKCnB1YmNpZC5vcmcY-qbMma4xSABSAghtEh0KDmVzcC5jcml0ZW8uY29tGOSmzJmuMUgAUgIIZA..&nel=1&eid=44772139%2C44777649%2C44781409%2C44781753%2C44782991%2C44788275%2C44801604&ref=https%3A%2F%2Fbrightcove2.lightning.force.com%2F&top=https%3A%2F%2Fwww.lastampa.it%2Fpolitica%2F2023%2F08%2F03%2Fvideo%2Fantonella_zedda_fdi_al_vice_presidente_del_senato_centinaio_mi_chiami_senatore_non_senatrice_la_replica_chiamatevi_c-12980826%2F%3Ftlh-custom-lib%3Dbrightcovesdk%3A%3Ahttps%3A%2F%2Fplayers.brightcove.net%2F6210505280001%2FQmpjr5DDGc_default%2Findex.min.js%26mnzadv%3Ddemo-sdk%26rpl%3D1&loc=https%3A%2F%2Fwww.lastampa.it%2Fpolitica%2F2023%2F08%2F03%2Fvideo%2Fantonella_zedda_fdi_al_vice_presidente_del_senato_centinaio_mi_chiami_senatore_non_senatrice_la_replica_chiamatevi_c-12980826%2F%3Ftlh-custom-lib%3Dbrightcovesdk%3A%3Ahttps%3A%2F%2Fplayers.brightcove.net%2F6210505280001%2FQmpjr5DDGc_default%2Findex.min.js%26mnzadv%3Ddemo-sdk%26rpl%3D1&dt=1696030111418&cookie=ID%3Ddb7559e916845ea1%3AT%3D1696029105%3ART%3D1696030105%3AS%3DALNI_MalaoKMkYrR2LQJE_ZFTBZQwNuyAg&gpic=UID%3D00000c555ab5e3b0%3AT%3D1696029105%3ART%3D1696030105%3AS%3DALNI_MbxV-1TsWONBgOiCB2lt3gnwjIidQ&scor=854196823326313&ged=ve4_td13_tt0_pd13_la0_er364.16.748.698_vi207.0.1072.714_vp100_eb24171',
+        // <Playlist>
+        /*
+        serverUrl: 'http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=%2F15018773%2Feverything2&ciu_szs=300x250%2C468x60%2C728x90&impl=s&gdfp_req=1&env=vp&output=xml_vast2&unviewed_position_start=1&url=dummy&correlator=[timestamp]&cmsid=133&vid=10XWSh7W4so&ad_rule=1',
+        */
+
+        // requestMode: 'oncue', 
+        // useMediaCuePoints: true,
+        /*
+            useMediaCuePoints must be set to true
+            requestMode must be set to the string oncue
+            serverUrl must be set to a valid VAST tag        
+        */
+        //requestMode: 'onload', 
+        //requestMode: 'onplay', 
+        requestMode: 'ondemand', 
+        timeout: 6000, 
+        debug: true,
+        hardTimeouts: false,
+        loadingSpinner: false,
+        vpaidMode: 'ENABLED',
+        ima3SdkSettings: {
+            disableCustomPlaybackForIOS10Plus: true, // enables skippable ads on iOS
+            autoPlayAdBreaks: false,
+            numRedirects: 10
+        } 
+    });
+    
+    videojs("adsPlayer").on('ima3-ready',function(){
+        message.innerHTML += "*** ima3-ready triggered<br>";
+        message.innerHTML += "*** Google IMA3 SDK version: " + google.ima.VERSION + "<br>";
+        message.innerHTML += "*** Brightcove IMA3 version: " + this.ima3.VERSION + "<br>";
+
+        if(videojs("adsPlayer").ima3) {
+            message.innerHTML += "*** player.ima exists. " + "<br>";
+        } else {
+            message.innerHTML += "*** player.ima doesn't exists. " + "<br>";            
+        }
+
+        /*
+        Description: https://support.brightcove.com/advertising-ima3-plugin#Methods
+        
+        If there is no Ads Manager yet, this method saves your settings and when an Ads Manager is created it uses the settings you provided. If an Ads Manager already exists, it is updated to use your settings. In either case, any new Ads Managers created in the future will also use the most recent settings you provided. You can create an AdsRenderingSettings object by accessing the IMA SDK directly. 
+
+        https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsRenderingSettings
+
+        * JavaScript: videojs("adsPlayer").ima3.adsRenderingSettings_
+        */
+        var adsRenderingSettings = new google.ima.AdsRenderingSettings();
+        if(videojs("adsPlayer").ima3) {
+            message.innerHTML += "*** adsRenderingSettings exists. " + "<br>";
+        } else {
+            message.innerHTML += "*** adsRenderingSettings doesn't exists. " + "<br>";            
+        }
+        
+        // This line (need both elements) shows the ad countdown.
+        adsRenderingSettings.uiElements = [google.ima.UiElements.COUNTDOWN, google.ima.UiElements.AD_ATTRIBUTION];
+
+        // adsRenderingSettings.bitrate = 2500;
+        // adsRenderingSettings.enablePreloading = true;
+        // adsRenderingSettings.useVideoAdUi = true;
+        // adsRenderingSettings.disableUi = true;
+        // adsRenderingSettings.playAdsAfterTime = 5;
+        videojs("adsPlayer").ima3.setAdsRenderingSettings(adsRenderingSettings);           
+    });
+    
+    videojs("adsPlayer").on('loadedmetadata',function(){
+        message.innerHTML += "### loadedmetadata triggered<br>";
+    });
+    
+    videojs("adsPlayer").on('ads-request', function() { 
+        message.innerHTML += "*** ads-request done<br>";
+    });
+            
+    videojs("adsPlayer").on('loadstart', function() {
+        myPlayer= this;
+        message.innerHTML += "### loadstart triggered<br>";
+
+        //myPlayer.ima3.adMacroReplacement = function(url){
+        //  message.innerHTML += "*** adMacroReplacement() called<br>";
+        //    return "https://" + myPlayer.mediainfo.name;
+        //};
+        myPlayer.on(EVENTS, function(event) {
+            videojs.log(event);
+        });
+
+        myPlayer.on('ads-ad-started',function(){
+            message.innerHTML += "*** ads-ad-started triggered<br>";
+        });
+
+        myPlayer.on('ima3-ad-error',function(){
+            message.innerHTML += "*** ima3-ad-error triggered<br>";
+        });
+        
+        myPlayer.on('ads-ad-ended',function(){
+            message.innerHTML += "*** ads-ad-ended triggered<br>";
+        });
+        
+        myPlayer.on('adstart', function() {
+            message.innerHTML += "*** adstart triggered<br>";
+        });
+        
+        myPlayer.on('adend', function() {
+            message.innerHTML += "*** adend triggered<br>";
+        });
+
+        myPlayer.on('ads-load', function() { 
+            message.innerHTML += "*** ad loaded<br>";
+        });     
+    });
+
+</script>
+
+
+</body>
+</html>

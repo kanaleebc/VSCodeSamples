@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>videojs-custom-endscreen Demo</title>
+  <link href="/node_modules/video.js/dist/video-js.css" rel="stylesheet">
+  <link href="/dist/videojs-custom-endscreen.css" rel="stylesheet">
+</head>
+<body>
+  <video id="videojs-custom-endscreen-player" class="video-js vjs-default-skin" controls>
+    <source src="//vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
+    <source src="//vjs.zencdn.net/v/oceans.webm" type='video/webm'>
+  </video>
+  <video id="videojs-custom-endscreen-player-2" class="video-js vjs-default-skin" controls>
+    <source src="//vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
+    <source src="//vjs.zencdn.net/v/oceans.webm" type='video/webm'>
+  </video>
+  <ul>
+    <li><a href="/test/debug.html">Run unit tests in browser.</a></li>
+  </ul>
+  <script src="/node_modules/video.js/dist/video.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/videojs-custom-endscreen@2/dist/videojs-custom-endscreen.min.js"></script>
+  <script>
+    (function(window, videojs) {
+      var player = window.player = videojs('videojs-custom-endscreen-player');
+      player.mediainfo = {
+        name: 'Disney\'s Oceans'
+      }
+      player.customEndscreen({
+        content: '<p>Thanks for watching {mediainfo.name}</p><p>Custom <a href="#">Content</a> Here</p>'
+      });
+      var player2 = window.player2 = videojs('videojs-custom-endscreen-player-2');
+      player2.mediainfo = {
+        name: 'Disney\'s Oceans'
+      }
+      player2.customEndscreen({
+        content: '<p>Thanks for watching 2! {mediainfo.name}</p><p>Custom <a href="#">Content</a> Here</p>'
+      });
+    }(window, window.videojs));
+  </script>
+</body>
+</html>

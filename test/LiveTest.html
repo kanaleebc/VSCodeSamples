@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Player Native Test</title>
+</head>
+<body>
+<div style="position: relative; width: 720px; height: 480px">
+    <video-js id="liveplayer"
+              data-account="6168786647001"
+              data-player="dF0zxRD0rO"
+              data-embed="default"
+              controls
+              data-application-id
+              class="vjs-fluid"></video-js>
+</div>
+<script src="//players.brightcove.net/6168786647001/dF0zxRD0rO_default/index.min.js"></script>
+
+<script>
+    var player = videojs("liveplayer");
+    player.ready(function () {
+      　var myPlayer = this;
+        //myPlayer.ima3.settings.serverUrl = 'https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_preroll_skippable&sz=640x480&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=';
+        player.src('https://linear-492.frequency.stream/dist/tnmarketing/492/hls/master/playlist.m3u8');
+    });
+</script>
+</body>
+</html>

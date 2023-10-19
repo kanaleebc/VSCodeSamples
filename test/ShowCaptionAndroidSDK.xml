@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Application name -->
+    <string name="app_name">ExoPlayer Sample App</string>
+
+    <!-- A sample Brightcove Edge Account ID -->
+    <string name="sdk_demo_account">6415663006001</string>
+
+    <!-- A sample Brightcove Edge Policy Key -->
+    <string name="sdk_demo_policy">BCpkADawqM1h28LCEdmrYqMEzrW_U9Jg1WjI0ETKrn8ClteGu3a5TxIdR_l7D9BWxuhFNZkWOYlDv192AsOhFXnDsidb9_WYR9iL3EuRAYo1drH0c10PsVNncl4lXsNSVU0Hj8K0CnjVoGlHT6ybKd2B_47Rlv_WBxrWVQ</string>
+
+    <!-- A sample Brightcove Video ID -->
+    <string name="sdk_demo_videoId">6327057083112</string>
+
+</resources>
+
+
+
+package com.brightcove.player.samples.exoplayer.basic;
+
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+
+import com.brightcove.player.controller.BrightcoveClosedCaptioningController;
+import com.brightcove.player.edge.Catalog;
+import com.brightcove.player.edge.VideoListener;
+import com.brightcove.player.event.EventEmitter;
+import com.brightcove.player.model.Video;
+import com.brightcove.player.view.BrightcoveExoPlayerVideoView;
+import com.brightcove.player.view.BrightcovePlayer;
+
+/**
+ * This app illustrates how to use the ExoPlayer with the Brightcove
+ * Native Player SDK for Android.
+ *
+ * @author Billy Hnath (bhnath@brightcove.com)
+ */
+public class MainActivity extends BrightcovePlayer {
+
+    private final String TAG = this.getClass().getSimpleName();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        // When extending the BrightcovePlayer, we must assign the brightcoveVideoView before
+        // entering the superclass. This allows for some stock video player lifecycle
+        // management.  Establish the video object and use it's event emitter to get important
+        // notifications and to control logging.
+        setContentView(R.layout.activity_main);
+        brightcoveVideoView = (BrightcoveExoPlayerVideoView) findViewById(R.id.brightcove_video_view);
+        super.onCreate(savedInstanceState);
+
+        // Get the event emitter from the SDK and create a catalog request to fetch a video from the
+        // Brightcove Edge service, given a video id, an account id and a policy key.
+        EventEmitter eventEmitter = brightcoveVideoView.getEventEmitter();
+        String account = getString(R.string.sdk_demo_account);
+
+        Catalog catalog = new Catalog.Builder(eventEmitter, account)
+                .setBaseURL(Catalog.DEFAULT_EDGE_BASE_URL)
+                .setPolicy(getString(R.string.sdk_demo_policy))
+                .build();
+
+        catalog.findVideoByID(getString(R.string.sdk_demo_videoId), new VideoListener() {
+
+            // Add the video found to the queue with add().
+            // Start playback of the video with start().
+            @Override
+            public void onVideo(Video video) {
+                Log.v(TAG, "onVideo: video = " + video);
+                brightcoveVideoView.add(video);
+                brightcoveVideoView.start();
+            }
+        });
+
+        // Create an instance of BrightcoveClosedCaptioningOptions with your desired settings
+        BrightcoveClosedCaptioningController captioningOptions = new BrightcoveClosedCaptioningController(brightcoveVideoView, this);
+
+        Button btn = findViewById(R.id.button3);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                captioningOptions.showCaptionsDialog();
+            }
+        });
+    }
+
+    // Define your function that you want to call when the button is clicked
+    private void showCaptionsDialogue() {
+        // Your implementation to show the captions dialogue here
+        // This is where you'd put the code to display the captions dialogue
+    }
+}
+
+
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Application name -->
+    <string name="app_name">ExoPlayer Sample App</string>
+
+    <!--Rio's Account -->
+    <string name="account">5425749943001</string>
+    <string name="policy">BCpkADawqM2n1Uh-gIyNIN_U0grgkY3PWCtoh8WNFGuR1llWcHLNKv1asRo6GVdjFQ90vi1CBxNM3-Y-ZEvKG3gBberFPxx5XTiuF-1X6mi-MIhGUKrxrCm0wlYp6qQish9xCijv9NOvMQCW</string>
+    <string name="videoId">6261559215001</string>
+    <!--<string name="videoId">5462744233001</string>-->
+
+    <!--Test details True Rowing Account -->
+    <!--<string name="account">5787522145001</string>
+    <string name="policy">BCpkADawqM0RPtNejNoO6X0niLKqhGLpDH-lWRHM8Pi59IbIYevhZhk5GfPoIjI7YRCpAS8kUCPub4mF6gu2Aq63fGSNGkmcO2hnXXPgxVClo9bzxy0Jaa739e-E_4esUVjaBEY8lo77l_jw</string>
+    <string name="videoId">6056611417001</string>-->
+
+    <!-- A sample details from Brightcove Edge Account -->
+    <!--<string name="account">3636334163001</string>
+    <string name="policy">BCpkADawqM1W-vUOMe6RSA3pA6Vw-VWUNn5rL0lzQabvrI63-VjS93gVUugDlmBpHIxP16X8TSe5LSKM415UHeMBmxl7pqcwVY_AZ4yKFwIpZPvXE34TpXEYYcmulxJQAOvHbv2dpfq-S_cm</string>
+    <string name="videoId">3637773814001</string>-->
+
+</resources>

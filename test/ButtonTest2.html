@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>DownloadButtonMultiplePlayer</title>
+</head>
+<body>
+    <!-- <video-js 
+        id="myPlayerID"
+        data-video-id="6010362248001"
+        data-account="1752604059001"
+        data-player="default"
+        data-embed="default"
+        data-application-id
+        controls>
+    </video-js>
+    <script src="//players.brightcove.net/1752604059001/default_default/index.min.js"></script> -->
+
+    <div style="max-width: 700px;">
+        <video-js
+            data-account="6415663006001"
+            data-player="wxq4UxDAS"
+            data-embed="default"
+            controls=""
+            data-video-id="6334119588112"
+            data-playlist-id=""
+            data-application-id=""
+            class="vjs-fluid">
+        </video-js>
+        <script src="https://players.brightcove.net/6415663006001/wxq4UxDAS_default/index.min.js"></script>
+    </div> 
+    <div class="wtw-audio-player">
+        <video-js 
+            id="myPlayerID"
+            data-video-id="6332623735112"
+            data-account="5728959027001"
+            data-player="ImHW0lZl3"
+            data-embed="default"
+            data-application-id
+            controls>
+        </video-js>
+        <script src="//players.brightcove.net/5728959027001/ImHW0lZl3_default/index.min.js"></script>
+    </div>
+    
+    <script>
+        videojs.registerPlugin('downloadAudio', function () {
+            // INITIALISER
+            if (document.querySelector(".wtw-audio-player") && typeof videojs !== "undefined") {
+                // Get all video-js items
+                var videoItems = document.querySelectorAll(".wtw-audio-player .video-js");
+                for (let i = 0; i < videoItems.length; i++) {
+                    const videoItem = videoItems[i];
+                    const isInsideWTWAudioPlayer = videoItem.closest('.wtw-audio-player');
+                    if (!isInsideWTWAudioPlayer) continue; // Skip if it's not inside a .wtw-audio-player
+
+                    const videoID = videoItem.getAttribute('id').replace('_html5_api', ''); // podcast_1_html5_api --> podcast_1
+                    const player = videojs.getPlayer(videoID); // 
+                    // Check if downloadAudio exists before calling it
+                    if (player && typeof player.downloadAudio === 'function') {
+                        player.downloadAudio();
+                    }
+                }
+            } else {
+                //console.warn("videojs library is not loaded or .wtw-audio-player not found.");
+            }
+        });
+    </script>
+</body>
+</html>

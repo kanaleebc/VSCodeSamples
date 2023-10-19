@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>AdPlayer Test</title>
+    
+    <link href="//players.brightcove.net/videojs-ima3/4/videojs-ima3.css" rel="stylesheet">
+
+    <style>
+        .video-js {
+            width: 640px;
+            height: 360px;
+        }
+        .vjs-ad-playing.vjs-ad-playing .vjs-progress-control .vjs-progress-control {
+            height: 0.1em;
+            top: 0.1em;
+        }
+        /* Add the following style */
+        .vjs-fluid-container {
+            max-width: 960px;
+        }
+        .vjs-fluid-container .video-js.vjs-fluid:not(.vjs-audio-only-mode) {
+            padding-top: 56.25%;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Add the following div block -->
+    <div class="vjs-fluid-container">
+        <video-js
+            id="adsPlayer"
+            data-account="6286608030001"
+            data-player="default"
+            data-embed="default"
+            controls=""
+            data-video-id="6309715331112"
+            data-playlist-id=""
+            data-application-id=""
+            class="vjs-fluid"></video-js>
+    </div>
+    <button id="ondemand" onclick="myPlayer.ima3.adrequest();">Ad Request</button>
+    <br>
+
+    <p style="text-align: left; font-family: monospace"><b><u>MESSAGE LOG:</u></b></p>
+    <p id="message"></p>
+
+    <script src="https://players.brightcove.net/6286608030001/default_default/index.min.js"></script>
+    <script src="//players.brightcove.net/videojs-ima3/4/videojs-ima3.min.js"></script>
+
+    <script type="text/javascript">
+        var myPlayer;
+        const EVENTS = [
+            'loadstart',
+            /* 'progress', */
+            'suspend',
+            'abort',
+            'error',
+            'emptied',
+            'stalled',
+            'loadedmetadata',
+            'loadeddata',
+            'canplay',
+            'canplaythrough',
+            'playing',
+            'waiting',
+            'seeking',
+            'seeked',
+            'ended',
+            'durationchange',
+            /* 'timeupdate', */
+            'play',
+            'pause',
+            'ratechange',
+            'resize',
+            'volumechange',
+        ];
+        //////////////////////////////////////////////////////
+        // IMA Playground: https://codepen.io/victor-ramos/pen/BRVbeR?editors=1010
+        // IMA SDK Document: https://developers.google.com/interactive-media-ads/docs/sdks/html5
+        //////////////////////////////////////////////////////
+
+        videojs("adsPlayer").on('ima3-ready', function () {
+            message.innerHTML += "*** ima3-ready triggered<br>";
+            message.innerHTML += "*** Google IMA3 SDK version: " + google.ima.VERSION + "<br>";
+            message.innerHTML += "*** Brightcove IMA3 version: " + this.ima3.VERSION + "<br>";
+
+            if (videojs("adsPlayer").ima3) {
+                message.innerHTML += "*** player.ima exists. " + "<br>";
+            } else {
+                message.innerHTML += "*** player.ima doesn't exists. " + "<br>";
+            }
+
+            /*
+            Description: https://support.brightcove.com/advertising-ima3-plugin#Methods
+
+            If there is no Ads Manager yet, this method saves your settings and when an Ads Manager is created it uses the settings you provided. If an Ads Manager already exists, it is updated to use your settings. In either case, any new Ads Managers created in the future will also use the most recent settings you provided. You can create an AdsRenderingSettings object by accessing the IMA SDK directly. 
+
+            https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsRenderingSettings
+
+            * JavaScript: videojs("adsPlayer").ima3.adsRenderingSettings_
+            */
+            var adsRenderingSettings = new google.ima.AdsRenderingSettings();
+            if (videojs("adsPlayer").ima3) {
+                message.innerHTML += "*** adsRenderingSettings exists. " + "<br>";
+            } else {
+                message.innerHTML += "*** adsRenderingSettings doesn't exists. " + "<br>";
+            }
+
+            // This line (need both elements) shows the ad countdown.
+            adsRenderingSettings.uiElements = [google.ima.UiElements.COUNTDOWN, google.ima.UiElements.AD_ATTRIBUTION];
+
+            // adsRenderingSettings.bitrate = 2500;
+            // adsRenderingSettings.enablePreloading = true;
+            // adsRenderingSettings.useVideoAdUi = true;
+            // adsRenderingSettings.disableUi = true;
+            // adsRenderingSettings.playAdsAfterTime = 5;
+            videojs("adsPlayer").ima3.setAdsRenderingSettings(adsRenderingSettings);
+        });
+
+        videojs("adsPlayer").on('loadedmetadata', function () {
+            message.innerHTML += "### loadedmetadata triggered<br>";
+        });
+
+        videojs("adsPlayer").on('ads-request', function () {
+            message.innerHTML += "*** ads-request done<br>";
+        });
+
+        videojs("adsPlayer").on('loadstart', function () {
+            myPlayer = this;
+            message.innerHTML += "### loadstart triggered<br>";
+
+            //myPlayer.ima3.adMacroReplacement = function(url){
+            //  message.innerHTML += "*** adMacroReplacement() called<br>";
+            //    return "https://" + myPlayer.mediainfo.name;
+            //};
+            myPlayer.on(EVENTS, function (event) {
+                videojs.log(event);
+            });
+
+            myPlayer.on('ads-ad-started', function () {
+                message.innerHTML += "*** ads-ad-started triggered<br>";
+            });
+
+            myPlayer.on('ima3-ad-error', function () {
+                message.innerHTML += "*** ima3-ad-error triggered<br>";
+            });
+
+            myPlayer.on('ads-ad-ended', function () {
+                message.innerHTML += "*** ads-ad-ended triggered<br>";
+            });
+
+            myPlayer.on('adstart', function () {
+                message.innerHTML += "*** adstart triggered<br>";
+            });
+
+            myPlayer.on('adend', function () {
+                message.innerHTML += "*** adend triggered<br>";
+            });
+
+            myPlayer.on('ads-load', function () {
+                message.innerHTML += "*** ad loaded<br>";
+            });
+        });
+    </script>
+</body>
+</html>

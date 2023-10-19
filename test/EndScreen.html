@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <script>
+        document.createElement('video');
+    </script>
+
+    <style>
+        .video-js {
+            width: 640px;
+            height: 360px;
+        }
+        .vjs-custom-endscreen-overlay.vjs-custom-overlay.vjs-modal-dialog {
+            background: rgba(0, 0, 0, 0.6);
+        }
+        .vjs-custom-endscreen-overlay.vjs-custom-overlay.vjs-modal-dialog .vjs-modal-dialog-content.vjs-endscreen-overlay-content {
+            background: rgba(0, 0, 0, 0);            
+        }
+        #endscreen_text {
+            color: #ffff00;
+            font-size: x-large;
+        }
+    </style>
+    <link href="//players.brightcove.net/videojs-custom-endscreen/2/videojs-custom-endscreen.css" rel='stylesheet'>
+</head>
+
+<body>
+
+    <video id="myPlayer" 
+    data-application-id="My Basic Template"
+    data-video-id="4902876982001" 
+    data-account="3981276734001" 
+    data-player="HyYPCNflZ" 
+    data-embed="default" 
+    class="video-js" 
+    controls></video>
+    <script src="//players.brightcove.net/3981276734001/HyYPCNflZ_default/index.min.js"></script>
+    <script src="//players.brightcove.net/videojs-custom-endscreen/2/videojs-custom-endscreen.min.js"></script>
+
+    <video-js id="myPlayerID"
+        data-video-id="6334118604112"
+        data-account="6415663006001"
+        data-player="yQiDPd5eg"
+        data-embed="default"
+        data-application-id
+        class="video-js"
+        controls></video-js>
+    <script src="https://players.brightcove.net/6415663006001/yQiDPd5eg_default/index.min.js"></script>
+    <script src="https://players.brightcove.net/videojs-custom-endscreen/2/videojs-custom-endscreen.min.js"></script>
+
+    <script type="text/javascript">
+        videojs("myPlayer").ready(function() {
+            var myPlayer = this;
+            myPlayer.on("loadedmetadata", function() {
+                myPlayer.customEndscreen({
+                    "content": '<div id="endscreen_text">TEST TEXT</div><div><a id="a1" href="https://www.brightcove.com">Link1</a></div><div><a id="a2" href="https://www.brightcove.com">Link2</a></div><div><a id="a3" href="https://www.brightcove.com">Link3</a></div>'
+                });
+            });
+        });
+
+        videojs("myPlayerID").ready(function() {
+            var myPlayer = this;
+            myPlayer.on("loadedmetadata", function() {
+                myPlayer.customEndscreen({
+                    "content": '<div id="endscreen_text2">TEST TEXT2</div><div><a id="a1" href="https://www.brightcove.com">Link1</a></div><div><a id="a2" href="https://www.brightcove.com">Link2</a></div><div><a id="a3" href="https://www.brightcove.com">Link3</a></div>'
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>title</title>
+  <link rel="stylesheet" type="text/css" href="https://players.brightcove.net/videojs-custom-endscreen/2/videojs-custom-endscreen.css">
+</head>
+<body>
+  
+  <div style="max-width: 960px;">
+    <style>
+      video-js.video-js.vjs-fluid:not(.vjs-audio-only-mode) {
+        padding-top: 56.25%;
+      }
+    </style>
+    <video-js
+      data-account="6415663006001"
+      data-player="default"
+      data-embed="default"
+      controls=""
+      data-video-id="6327057083112"
+      data-playlist-id=""
+      data-application-id=""
+      class="vjs-fluid"></video-js>
+  </div>
+  
+  <div id="clickCount" style="text-align:center">
+    Click Count: <span id="countValue">0</span>
+  </div>
+  
+  <script src="https://players.brightcove.net/6415663006001/default_default/index.min.js"></script>
+  <script type="text/javascript" src="https://players.brightcove.net/videojs-custom-endscreen/2/videojs-custom-endscreen.min.js"></script>
+  
+  <script type="text/javascript">
+    var countValueElement = document.getElementById('countValue');
+    var endScreenLink = document.getElementById('endScreenLink');
+    
+    function incrementClickCount() {
+      fetch('/incrementClickCount')
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(data) {
+          countValueElement.textContent = data.count;
+        })
+        .catch(function(error) {
+          console.error('Error:', error);
+        });
+    }
+    
+    endScreenLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      incrementClickCount();
+      window.open(endScreenLink.href, '_blank');
+    });
+    
+    videojs.getPlayer('myPlayerID').ready(function() {
+      var myPlayer = this;
+      myPlayer.customEndscreen({
+        content: '<div style="text-align:center"><p>Go to Brightcove Official Page</p><br/><a id="endScreenLink" href="https://player.support.brightcove.com/plugins/custom-endscreen-plugin.html"><img src="https://cs1.brightcodes.net/itakahashi/test/images/BrightcoveLogo.png"></a></div>'
+      });
+    });
+  </script>
+
+</body>
+</html>
